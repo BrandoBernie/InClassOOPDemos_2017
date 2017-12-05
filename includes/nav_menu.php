@@ -5,39 +5,35 @@
     //to allow us to dynamically set the active menu item based on the current page 
     //the user is currently visiting
     $links = array(
-        'Home'=>array('link'=>SITE_URI,'icon'=>'home'),
-        'About' => array('link'=>SITE_URI.'about.php','icon'=>'question-circle'),
+        'Home' => array('link' => SITE_URI, 'icon' => 'home'),
+        'About' => array('link' => SITE_URI . 'about.php', 'icon' => 'question-circle'),
         //'Services' => array('link'=>'/InClassOOPDemos_2017/services.php','icon'=>'th-large'),
-        'Contact' => array('link'=>SITE_URI.'contact.php','icon'=>'envelope')
+        'Contact' => array('link' => SITE_URI . 'contact.php', 'icon' => 'envelope')
     );
-    
+
     //var_dump($links);
 //    foreach($links as $page=>$link){
 //        echo $page."<br>";
 //        echo($link['link'])."<br>";
 //        echo($link['icon'])."<br>";//        
 //    }
-   
-
     //Find out which page user is viewing
     $this_page = $_SERVER['REQUEST_URI'];
     // =========== test =================//
     //echo $this_page;
     //exit();
     // ========= end test ===============//   
-
     //loop the array and check if array page matches $this_page
-    foreach($links as $page=>$link){
+    foreach ($links as $page => $link) {
         echo '<li class="nav-item';
         if ($this_page == $link['link']) {
             echo ' active">';
         } else {
             echo '">';
         }
-     echo "<a class='nav-link' href='{$link['link']}'>
+        echo "<a class='nav-link' href='{$link['link']}'>
                 <i class='fa fa-{$link['icon']}' aria-hidden='true'></i> $page</a></li>";
-       
-    }  
+    }
     ?>
     <!-- Articles dropdown -->
     <li class="nav-item dropdown">
@@ -46,13 +42,30 @@
         </a>
         <div class="dropdown-menu" aria-labelledby="articlesdropdown">
             <a class="dropdown-item" href="articles.php"><i class="fa fa-list" aria-hidden="true"></i> All Articles</a>
-            <a class="dropdown-item" href="articlesbycategory.php?id=1"><span class="badge badge-pill badge-light">2</span> Database Security</a>
-            <a class="dropdown-item" href="articlesbycategory.php?id=7"><span class="badge badge-pill badge-light">3</span> General Web Security</a>
-            <a class="dropdown-item" href="articlesbycategory.php?id=4"><span class="badge badge-pill badge-light">2</span> HTML 5</a>
+
+<?php
+// call the getCategoryList method from the DbHandler to retrieve
+// the actual catgeories from the database
+$data = $dbh->getCategoryList();
+if ($data['error'] == false) {
+    //no error - get data items
+    $catItems = $data['items'];
+    //loop each catItems and build menu
+    foreach($catItems as $item){
+        $catId = $item['id'];
+        $category = $item['category'];
+        $total = $item['total'];
+        echo "<a class='dropdown-item' href='articlesbycategory.php?id=$catId'><span class='badge badge-pill badge-light'>$total</span> $category</a>";
+    }
+}
+?>
+<!--            <a class="dropdown-item" href="articlesbycategory.php?id=1"><span class="badge badge-pill badge-light">2</span> Database Security</a>
+<a class="dropdown-item" href="articlesbycategory.php?id=7"><span class="badge badge-pill badge-light">3</span> General Web Security</a>
+<a class="dropdown-item" href="articlesbycategory.php?id=4"><span class="badge badge-pill badge-light">2</span> HTML 5</a>-->
         </div>
     </li>
     <!-- Account dropdown -->
-        <li class="nav-item dropdown">
+    <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="accountdropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <i class="fa fa-user" aria-hidden="true"></i> Account
         </a>
